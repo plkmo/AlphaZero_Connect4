@@ -1,6 +1,5 @@
 # AlphaZero Connect4
 # From-scratch implementation of AlphaZero for Connect4
-(Updated 4/7/2019)
 
 This repo demonstrates an implementation of AlphaZero framework for Connect4, using python and PyTorch.
 
@@ -41,7 +40,21 @@ A full iteration pipeline consists of:
 
 # How to play
 
-1) Clone the repo, then run main_pipeline.py with appropriate arguments to start training your model. (*Multi-processing code functionality not yet tested)
+1) Clone the repo, then run main_pipeline.py with appropriate arguments to start training your model.
+```bash
+main_pipeline.py [-h] 
+		[--iteration ITERATION]  
+		[--MCTS_num_processes MCTS_NUM_PROCESSES]
+		[--num_games_per_MCTS_process NUM_GAMES_PER_MCTS_PROCESS]  
+		[--temperature_MCTS TEMPERATURE_MCTS]  
+		[--num_evaluator_games NUM_EVALUATOR_GAMES]  
+		[--neural_net_name NEURAL_NET_NAME]  
+		[--batch_size BATCH_SIZE]  
+		[--num_epochs NUM_EPOCHS]  
+		[--lr LR]  
+		[--gradient_acc_steps GRADIENT_ACC_STEPS]  
+		[--max_norm MAX_NORM]  
+```
 
 # Results
 

@@ -4,6 +4,7 @@
 *.bmp
 *.tiff
 *.pth
+*.pyc
 /src/datasets/*
 /src/evaluator_data/*
 /src/__pycache__/*

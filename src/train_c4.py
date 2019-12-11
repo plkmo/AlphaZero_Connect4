@@ -84,7 +84,7 @@ def train(net, dataset, optimizer, scheduler, start_epoch, cpu, args, iteration)
             if (epoch % args.gradient_acc_steps) == 0:
                 optimizer.step()
                 optimizer.zero_grad()
-                scheduler.step()
+                
             total_loss += loss.item()
             if i % 50 == 49:    # print every 50 mini-batches of size = batch_size
                 losses_per_batch.append(args.gradient_acc_steps*total_loss/50)
@@ -97,6 +97,8 @@ def train(net, dataset, optimizer, scheduler, start_epoch, cpu, args, iteration)
                 #print("Res18 grad %.7f:" % net.res_18.conv1.weight.grad.mean().item())
                 print(" ")
                 total_loss = 0.0
+        
+        scheduler.step()
         if len(losses_per_epoch) >= 1:
             losses_per_epoch.append(sum(losses_per_batch)/len(losses_per_batch))
         if (epoch % 2) == 0:
@@ -141,7 +143,7 @@ def train_chessnet(args, iteration, new_optim_state):
     if cuda:
         net.cuda()
     optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.8, 0.999))
-    scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[100,150,300,400], gamma=0.77)
+    scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[50,100,150,200,250,300,400], gamma=0.77)
     start_epoch = load_state(net, optimizer, scheduler, args, iteration, new_optim_state)
     
     train(net, datasets, optimizer, scheduler, start_epoch, 0, args, iteration)
