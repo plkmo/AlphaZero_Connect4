@@ -155,7 +155,8 @@ def MCTS_self_play(connectnet, num_games, start_idx, cpu, args, iteration):
     logger.info("[CPU: %d]: Starting MCTS self-play..." % cpu)
     
     if not os.path.isdir("./datasets/iter_%d" % iteration):
-        os.mkdir("datasets")
+        if not os.path.isdir("datasets"):
+            os.mkdir("datasets")
         os.mkdir("datasets/iter_%d" % iteration)
         
     for idxx in tqdm(range(start_idx,num_games)):

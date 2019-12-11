@@ -99,7 +99,7 @@ def train(net, dataset, optimizer, scheduler, start_epoch, cpu, args, iteration)
                 total_loss = 0.0
         
         scheduler.step()
-        if len(losses_per_epoch) >= 1:
+        if len(losses_per_batch) >= 1:
             losses_per_epoch.append(sum(losses_per_batch)/len(losses_per_batch))
         if (epoch % 2) == 0:
             save_as_pickle("losses_per_epoch_iter%d.pkl" % (iteration + 1), losses_per_epoch)
@@ -124,7 +124,8 @@ def train(net, dataset, optimizer, scheduler, start_epoch, cpu, args, iteration)
     ax.set_ylabel("Loss per batch")
     ax.set_title("Loss vs Epoch")
     plt.savefig(os.path.join("./model_data/", "Loss_vs_Epoch_iter%d_%s.png" % ((iteration + 1), datetime.datetime.today().strftime("%Y-%m-%d"))))
-
+    plt.show()
+    
 def train_chessnet(args, iteration, new_optim_state):
     # gather data
     logger.info("Loading training data...")
