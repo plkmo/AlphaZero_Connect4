@@ -159,7 +159,7 @@ def MCTS_self_play(connectnet, num_games, start_idx, cpu, args, iteration):
             os.mkdir("datasets")
         os.mkdir("datasets/iter_%d" % iteration)
         
-    for idxx in tqdm(range(start_idx,num_games)):
+    for idxx in tqdm(range(start_idx, num_games + start_idx)):
         logger.info("[CPU: %d]: Game %d" % (cpu, idxx))
         current_board = c_board()
         checkmate = False
@@ -180,7 +180,7 @@ def MCTS_self_play(connectnet, num_games, start_idx, cpu, args, iteration):
                                                     np.random.choice(np.array([0,1,2,3,4,5,6]), \
                                                                      p = policy)) # decode move and move piece(s)
             dataset.append([board_state,policy])
-            print("[CPU: %d]: Game %d CURRENT BOARD:\n" % (cpu, idxx), current_board.current_board,current_board.player); print(" ")
+            print("[Iteration: %d CPU: %d]: Game %d CURRENT BOARD:\n" % (iteration, cpu, idxx), current_board.current_board,current_board.player); print(" ")
             if current_board.check_winner() == True: # if somebody won
                 if current_board.player == 0: # black wins
                     value = -1

@@ -38,12 +38,13 @@ A full iteration pipeline consists of:
 
 4) Rinse and repeat. Note that in the paper, all these processes are running simultaneously in parallel, subject to available computing resources one has.
 
-# How to play
+# How to run
 
 1) Clone the repo, then run main_pipeline.py with appropriate arguments to start training your model.
 ```bash
 main_pipeline.py [-h] 
 		[--iteration ITERATION]  
+		[--total_iterations TOTAL_ITERATIONS]  
 		[--MCTS_num_processes MCTS_NUM_PROCESSES]
 		[--num_games_per_MCTS_process NUM_GAMES_PER_MCTS_PROCESS]  
 		[--temperature_MCTS TEMPERATURE_MCTS]  

@@ -69,6 +69,8 @@ def train(net, dataset, optimizer, scheduler, start_epoch, cpu, args, iteration)
     losses_per_epoch = load_results(iteration + 1)
     
     logger.info("Starting training process...")
+    update_size = len(train_loader)//10
+    print("Update step size: %d" % update_size)
     for epoch in range(start_epoch, args.num_epochs):
         total_loss = 0.0
         losses_per_batch = []
@@ -86,10 +88,10 @@ def train(net, dataset, optimizer, scheduler, start_epoch, cpu, args, iteration)
                 optimizer.zero_grad()
                 
             total_loss += loss.item()
-            if i % 50 == 49:    # print every 50 mini-batches of size = batch_size
-                losses_per_batch.append(args.gradient_acc_steps*total_loss/50)
-                print('Process ID: %d [Epoch: %d, %5d/ %d points] total loss per batch: %.3f' %
-                      (os.getpid(), epoch + 1, (i + 1)*args.batch_size, len(train_set), losses_per_batch[-1]))
+            if i % update_size == (update_size - 1):    # print every update_size-d mini-batches of size = batch_size
+                losses_per_batch.append(args.gradient_acc_steps*total_loss/update_size)
+                print('[Iteration %d] Process ID: %d [Epoch: %d, %5d/ %d points] total loss per batch: %.3f' %
+                      (iteration, os.getpid(), epoch + 1, (i + 1)*args.batch_size, len(train_set), losses_per_batch[-1]))
                 print("Policy (actual, predicted):",policy[0].argmax().item(),policy_pred[0].argmax().item())
                 print("Policy data:", policy[0]); print("Policy pred:", policy_pred[0])
                 print("Value (actual, predicted):", value[0].item(), value_pred[0,0].item())
@@ -126,7 +128,7 @@ def train(net, dataset, optimizer, scheduler, start_epoch, cpu, args, iteration)
     plt.savefig(os.path.join("./model_data/", "Loss_vs_Epoch_iter%d_%s.png" % ((iteration + 1), datetime.datetime.today().strftime("%Y-%m-%d"))))
     plt.show()
     
-def train_chessnet(args, iteration, new_optim_state):
+def train_connectnet(args, iteration, new_optim_state):
     # gather data
     logger.info("Loading training data...")
     data_path="./datasets/iter_%d/" % iteration

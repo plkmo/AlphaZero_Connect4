@@ -47,13 +47,13 @@ class arena():
         value = 0; t = 0.1
         while checkmate == False and current_board.actions() != []:
             dataset.append(copy.deepcopy(ed.encode_board(current_board)))
-            print(current_board.current_board); print(" ")
+            print(""); print(current_board.current_board)
             if current_board.player == 0:
                 root = UCT_search(current_board,777,white,t)
-                policy = get_policy(root, t); print(policy, "white = %s" %(str(w)))
+                policy = get_policy(root, t); print("Policy: ", policy, "white = %s" %(str(w)))
             elif current_board.player == 1:
                 root = UCT_search(current_board,777,black,t)
-                policy = get_policy(root, t); print(policy, "black = %s" %(str(b)))
+                policy = get_policy(root, t); print("Policy: ", policy, "black = %s" %(str(b)))
             current_board = do_decode_n_move_pieces(current_board,\
                                                     np.random.choice(np.array([0,1,2,3,4,5,6]), \
                                                                      p = policy)) # decode move and move piece(s)
@@ -84,9 +84,9 @@ class arena():
                 current_wins += 1
             save_as_pickle("evaluate_net_dataset_cpu%i_%i_%s_%s" % (cpu,i,datetime.datetime.today().strftime("%Y-%m-%d"),\
                                                                      str(winner)),dataset)
-        print("Current_net wins ratio: %.5f" % current_wins/num_games)
+        print("Current_net wins ratio: %.5f" % (current_wins/num_games))
         save_as_pickle("wins_cpu_%i" % (cpu),\
-                                             {"best_win_ratio":current_wins/num_games, "num_games":num_games})
+                                             {"best_win_ratio": current_wins/num_games, "num_games":num_games})
         logger.info("[CPU %d]: Finished arena games!" % cpu)
         
 def fork_process(arena_obj, num_games, cpu): # make arena picklable
@@ -99,12 +99,19 @@ def evaluate_nets(args, iteration_1, iteration_2) :
                                     current_net)
     best_net_filename = os.path.join("./model_data/",\
                                     best_net)
+    
+    logger.info("Current net: %s" % current_net)
+    logger.info("Previous (Best) net: %s" % best_net)
+    
     current_cnet = ConnectNet()
     best_cnet = ConnectNet()
     cuda = torch.cuda.is_available()
     if cuda:
         current_cnet.cuda()
         best_cnet.cuda()
+    
+    if not os.path.isdir("./evaluator_data/"):
+        os.mkdir("evaluator_data")
     
     if args.MCTS_num_processes > 1:
         mp.set_start_method("spawn",force=True)
@@ -135,7 +142,7 @@ def evaluate_nets(args, iteration_1, iteration_2) :
         wins_ratio = 0.0
         for i in range(num_processes):
             stats = load_pickle("wins_cpu_%i" % (i))
-            wins_ratio += stats.best_win_ratio
+            wins_ratio += stats['best_win_ratio']
         wins_ratio = wins_ratio/num_processes
         if wins_ratio >= 0.55:
             return iteration_2
