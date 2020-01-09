@@ -76,8 +76,9 @@ def train(net, dataset, optimizer, scheduler, start_epoch, cpu, args, iteration)
         losses_per_batch = []
         for i,data in enumerate(train_loader,0):
             state, policy, value = data
+            state, policy, value = state.float(), policy.float(), value.float()
             if cuda:
-                state, policy, value = state.cuda().float(), policy.float().cuda(), value.cuda().float()
+                state, policy, value = state.cuda(), policy.cuda(), value.cuda()
             policy_pred, value_pred = net(state) # policy_pred = torch.Size([batch, 4672]) value_pred = torch.Size([batch, 1])
             loss = criterion(value_pred[:,0], value, policy_pred, policy)
             loss = loss/args.gradient_acc_steps
